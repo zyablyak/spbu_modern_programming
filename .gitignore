@@ -1,0 +1,9 @@
+.vscode/
+.alcache/
+lib/
+*Testing/
+*CMakeFiles/
+
+*.ninja*
+*.cmake
+*CMakeCache*
