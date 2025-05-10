@@ -10,6 +10,7 @@ add_subdirectory(obuchaika)
 add_subdirectory(unit_test_example)
 add_subdirectory(long_numbers)
 add_subdirectory(vector)
+add_subdirectory(doubly_linked_list)
 
 
 
