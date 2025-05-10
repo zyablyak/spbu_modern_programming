@@ -360,7 +360,7 @@ LongNumber LongNumber::operator/(const LongNumber& x) const {
 
     quotient.sign = sign * x.sign;
 
-    // Корректировка для отрицательных результатов
+    // Корректировка для отрицательных результатов (округление вниз)
     if (sign * x.sign == -1 && !(dividend.length == 1 && dividend.numbers[0] == 0)) {
         quotient = quotient - one;
     }
@@ -377,37 +377,20 @@ LongNumber LongNumber::operator%(const LongNumber& x) const {
         throw std::runtime_error("Division by zero");
     }
 
+    // Вычисляем частное с округлением вниз
     LongNumber quotient = *this / x;
+
+    // Вычисляем remainder = this - (quotient * x)
     LongNumber remainder = *this - (quotient * x);
 
-    // Корректировка остатка
+    // Корректировка для отрицательных случаев
     if (remainder != LongNumber("0")) {
-        // Если знаки делимого и остатка разные
-        if ((is_negative() && !remainder.is_negative()) ||
-            (!is_negative() && remainder.is_negative())) {
-            // Корректируем остаток в сторону делимого
-            if (is_negative()) {
-                remainder = remainder + x;
-            } else {
-                remainder = remainder - x;
-            }
-            }
-    }
-
-    // Дополнительная проверка для случаев, когда остаток по модулю больше делителя
-    LongNumber abs_remainder = remainder;
-    abs_remainder.sign = 1;
-    LongNumber abs_x = x;
-    abs_x.sign = 1;
-
-    if (abs_remainder >= abs_x) {
-        if (is_negative()) {
+        if (x.is_negative() != remainder.is_negative()) {
             remainder = remainder + x;
-        } else {
-            remainder = remainder - x;
         }
     }
 
+    // Ноль всегда положительный
     if (remainder.length == 1 && remainder.numbers[0] == 0) {
         remainder.sign = 1;
     }
