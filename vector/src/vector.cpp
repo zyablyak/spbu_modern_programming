@@ -8,11 +8,16 @@ template<typename T>
 const std::size_t Vector<T>::START_CAPACITY = 10;
 
 template<typename T>
-Vector<T>::Vector() : arr(new T[START_CAPACITY]), capacity(START_CAPACITY), size(0) {}
+Vector<T>::Vector() : capacity(START_CAPACITY), size(0) {
+	arr = new T[START_CAPACITY];
+}
 
 template<typename T>
 Vector<T>::~Vector() {
 	delete[] arr;
+	arr = nullptr;
+	size = 0;
+	capacity = START_CAPACITY;
 }
 
 template<typename T>
@@ -87,7 +92,19 @@ bool Vector<T>::remove_first(const T& value) {
 			for (std::size_t j = i; j < size - 1; ++j) {
 				arr[j] = arr[j + 1];
 			}
+
 			--size;
+
+			if (size <= capacity / 4 && capacity > START_CAPACITY) {
+				capacity /= 2;
+				T* new_arr = new T[capacity];
+				for (std::size_t k = 0; k < size; ++k) {
+					new_arr[k] = arr[k];
+				}
+				delete[] arr;
+				arr = new_arr;
+			}
+
 			return true;
 		}
 	}
